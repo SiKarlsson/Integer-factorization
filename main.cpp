@@ -34,6 +34,7 @@ void writeNumbers(std::vector<int> numbers) {
 }
 
 int main() {
+    
     std::vector<int> numbers = readNumbers();
 
     writeNumbers(numbers);
