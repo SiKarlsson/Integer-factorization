@@ -27,9 +27,18 @@ std::vector<int> readNumbers() {
     return numbers;
 }
 
+void writeNumbers(std::vector<int> numbers) {
+    
+    for (int i : numbers) {
+        std::cout << i << std::endl;
+    }
+}
+
 int main()
 {
     std::vector<int> numbers = readNumbers();
+
+    writeNumbers(numbers);
 
     return 0;   
 }
