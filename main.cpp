@@ -13,8 +13,7 @@ std::vector<int> readNumbers() {
     int number;
     bool reading = true;
 
-    while (reading)
-    {
+    while (reading) {
         std::cin >> number;
 
         if (number != 0) {
