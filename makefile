@@ -23,7 +23,7 @@ incl:
 spojfiles: incl
 	@echo "Compiling spoj header..."
 	#@cat common.h spoj.h incl.h > spojfiles.h
-	@cat incl.h > spojfiles.h
+	@cat common.h incl.h > spojfiles.h
 
 spoj: spojfiles main.cpp
 	@echo "Compiling spoj (32 bit) file..."
@@ -34,11 +34,12 @@ spoj: spojfiles main.cpp
 localfiles:
 	@echo "Compiling local header..."
 	#@cat common.h local.h > localfiles.h
+	@cat common.h > localfiles.h
 
 local: localfiles main.cpp
 	@echo "Compiling local (64 bit) file..."
 	#@cat localfiles.h main.cpp > local.cpp
-	@cat main.cpp > local.cpp
+	@cat incl.h main.cpp > local.cpp
 	$(CC) $(CFLAGS) $(PFLAGS) -o $(PROGNAME) local.cpp
 
 debug:
