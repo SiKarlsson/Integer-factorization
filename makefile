@@ -22,7 +22,8 @@ incl:
 
 spojfiles: incl
 	@echo "Compiling spoj header..."
-	@cat common.h spoj.h incl.h > spojfiles.h
+	#@cat common.h spoj.h incl.h > spojfiles.h
+	@cat incl.h > spojfiles.h
 
 spoj: spojfiles main.cpp
 	@echo "Compiling spoj (32 bit) file..."
