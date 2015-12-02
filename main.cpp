@@ -1,5 +1,4 @@
 
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -29,8 +28,22 @@ ttmath::UInt<bits> gcd(ttmath::UInt<bits> a, ttmath::UInt<bits> b) {
 	return a;
 }
 
+bool isPrimeNaive(ttmath::UInt<bits> n) {
+	if(n < 2) return false;
+	if(n == 2) return true;
+   	if(n % 2 == 0) return false;
+    	for(ttmath::UInt<bits> i=3; (i*i)<=n; i+=2){
+        	if(n % i == 0 ) return false;
+   	 }
+    	return true;
+}
+
 bool isPrime(ttmath::UInt<bits> n, int k) {
+	
+	return isPrimeNaive(n);
+
 	ttmath::UInt<bits> x, a, d, r, tmp;
+
 
 	if(n % 2 == 0) {
 		return false;
@@ -38,16 +51,16 @@ bool isPrime(ttmath::UInt<bits> n, int k) {
 	if(n < 7) {
 		return true;
 	}
-
+	
 	d = n-1;
 	r = 0;
-
 	while(d % 2 == 0) {
 		d = d / 2;
 		r++;
 	}
 
 	for(int i = 0; i < k; i++) {
+		std::cout << "9" << std::endl;
 		a = randUInt();
         	a = a % (n-4) + 2;
 		
@@ -73,7 +86,7 @@ bool isPrime(ttmath::UInt<bits> n, int k) {
 }
 
 bool trivial(ttmath::UInt<bits> factor, ttmath::UInt<bits> N) {
-	if(factor==1||factor==-1) {
+	if(factor == 1 || factor == -1 ||factor==N||factor==N-N-N) {
 		return true;
 	}else{
 		return false;	
@@ -82,13 +95,11 @@ bool trivial(ttmath::UInt<bits> factor, ttmath::UInt<bits> N) {
 
 
 ttmath::UInt<bits> pollardsRho(ttmath::UInt<bits> N) {
+
 	ttmath::UInt<bits> x0, x1, tmp, y0, y1, b;
 
 	if (isPrime(N, 10)) {
 		return N;
-	}
-	else {
-		std::cout << N << " is not a prime!" << std::endl;
 	}
 	
 	for(unsigned int j = 0; j < bits; j++) {
@@ -98,8 +109,6 @@ ttmath::UInt<bits> pollardsRho(ttmath::UInt<bits> N) {
 
 	x0 = x0 % N;
 	y0 = x0;
-
-	std::cout << "x0: " << x0 << std::endl;
 
 	b = 1;
 
@@ -112,18 +121,16 @@ ttmath::UInt<bits> pollardsRho(ttmath::UInt<bits> N) {
 		y1 = (tmp + b);
 		y1.Pow(2);
 		y1 = (y1 + b) % N;
-		std::cout << "x1: " << x1 << std::endl;
-		std::cout << "y1: " << y1 << std::endl;
 		tmp = gcd(std::max(x1, y1) - std::min(x1, y1), N);
-		std::cout << "tmp: " << tmp << std::endl;
 
 		if (tmp == N) {
 			b++;
 			continue;
-		}
-		if(!trivial(tmp, N)) {
+		}	
+	
+		if(!trivial(tmp, N) && isPrime(tmp, 5)) {
 			return tmp;
-		}		
+		}	
 
 		x0 = x1;
 		y0 = y1;
@@ -131,39 +138,46 @@ ttmath::UInt<bits> pollardsRho(ttmath::UInt<bits> N) {
 }
 
 int main() {
+
 	ttmath::UInt<bits> N, factor;
 	
 	std::string s;
 	std::vector<std::string> factors;
 
+	std::map<ttmath::UInt<bits>, ttmath::UInt<bits>> map;
+
 	while(true) {
-		std::map<ttmath::UInt<bits>, ttmath::UInt<bits>> map;	
+
 		std::cin >> N;
 
 		if(N == 0) {
 			break;
 		}	
-		do {
-			std::cout << "N: " << N << std::endl;
-       			//std::cout << "Factoring: " << N << std::endl;
-        		factor = pollardsRho(N);
-        		//std::cout << factor << std::endl;
-			while(N % factor == 0) {
-				N = N / factor;
-				map[factor]++;
-			}
-			std::cout << "factor: " << factor << std::endl;
-		} while (N != 1);
+		
+		while (N != 1) {
+			factor = pollardsRho(N);
+			map[factor]++;
+			N = N / factor;
+		}		
+
 		for(auto const &it : map) {
 			s = s + it.first.ToString() + "^" + it.second.ToString() + " ";
 		}
 		factors.push_back(s);
 		s = "";
+		
+		for(auto const &it : map) {
+                      map[it.second] = 0;
+                }
+
+		map.clear(); 
+
 	}
 	
 	for(int i = 0; i < factors.size(); i++) {
 		std::cout << factors[i] << std::endl;
 	}
+	
 
 	return 0;
 }
