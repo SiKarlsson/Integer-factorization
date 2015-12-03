@@ -57,7 +57,7 @@ bool isPrime(ttmath::UInt<bits> n, int k) {
 	
 	//return isPrimeNaive(n);
 
-	if (n < 100) {
+	if (n < 500) {
 		return isPrimeNaive(n);
 	}
 
