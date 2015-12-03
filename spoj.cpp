@@ -64,6 +64,10 @@ bool isPrime(ttmath::UInt<bits> n, int k) {
 	
 	//return isPrimeNaive(n);
 
+	if (n < 100) {
+		return isPrimeNaive(n);
+	}
+
 	ttmath::UInt<bits> x, a, d, r, tmp;
 
 
@@ -130,11 +134,12 @@ ttmath::UInt<bits> polles(ttmath::UInt<bits> N) {
 	ttmath::UInt<bits> tmp;
 
 	if (isPrime(N, 5)) {
+		//std::cout << N << " is a prime " << std::endl;
 		return -1;
-	}	
+	}
 
 	if (N < 1000) {
-		std::cout << N << " < 1000" << std::endl;
+		//std::cout << N << " < 1000" << std::endl;
 		return trial(N);
 	}
 
@@ -144,8 +149,17 @@ ttmath::UInt<bits> polles(ttmath::UInt<bits> N) {
 		d = gcd(std::max(x, y) - std::min(x, y), N);
 	}
 	if (d == N) {
+		if (! isPrime(d, 5)) {
+			//std::cout << d << " == " << N << std::endl;
+			return trial(N);
+		}
 		return -1;
 	} else {
+		//std::cout << "found d: " << d << std::endl;
+		if (isPrimeNaive(d) == false) {
+			//std::cout << d << " is not a factor!" << std::endl;
+			return trial(d);
+		}
 		return d;
 	}
 }
