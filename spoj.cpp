@@ -156,7 +156,7 @@ ttmath::UInt<bits> polles(ttmath::UInt<bits> N) {
 		return -1;
 	} else {
 		//std::cout << "found d: " << d << std::endl;
-		if (isPrime(d) == false) {
+		if (isPrime(d, 5) == false) {
 			//std::cout << d << " is not a factor!" << std::endl;
 			return trial(d);
 		}
