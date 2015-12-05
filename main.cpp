@@ -32,6 +32,78 @@ ttmath::UInt<bits> mod_exp(ttmath::UInt<bits> base, ttmath::UInt<bits> exponent,
 	return res;
 }
 
+/* 
+ * calculates (a * b) % c taking into account that a * b might overflow 
+ */
+ttmath::UInt<bits> mulmod(ttmath::UInt<bits> a, ttmath::UInt<bits> b, ttmath::UInt<bits> mod)
+{
+    ttmath::UInt<bits> x = 0,y = a % mod;
+    while (b > 0)
+    {
+        if (b % 2 == 1)
+        {    
+            x = (x + y) % mod;
+        }
+        y = (y * 2) % mod;
+        b /= 2;
+    }
+    return x % mod;
+}
+/* 
+ * modular exponentiation
+ */
+ttmath::UInt<bits> modulo(ttmath::UInt<bits> base, ttmath::UInt<bits> exponent, ttmath::UInt<bits> mod)
+{
+    ttmath::UInt<bits> x = 1;
+    ttmath::UInt<bits> y = base;
+    while (exponent > 0)
+    {
+        if (exponent % 2 == 1)
+            x = (x * y) % mod;
+        y = (y * y) % mod;
+        exponent = exponent / 2;
+    }
+    return x % mod;
+}
+ 
+/*
+ * Miller-Rabin primality test, iteration signifies the accuracy
+ */
+bool Miller(ttmath::UInt<bits> p,int iteration)
+{
+    if (p < 2)
+    {
+        return false;
+    }
+    if (p != 2 && p % 2==0)
+    {
+        return false;
+    }
+    ttmath::UInt<bits> s = p - 1;
+    while (s % 2 == 0)
+    {
+        s /= 2;
+    }
+    for (int i = 0; i < iteration; i++)
+    {
+        ttmath::UInt<bits> a = randUInt() % (p - 1) + 1, temp = s;
+        ttmath::UInt<bits> mod = modulo(a, temp, p);
+        while (temp != p - 1 && mod != 1 && mod != p - 1)
+        {
+            mod = mulmod(mod, mod, p);
+            temp *= 2;
+        }
+        if (mod != p - 1 && temp % 2 == 0)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
+
 ttmath::UInt<bits> gcd(ttmath::UInt<bits> a, ttmath::UInt<bits> b) {
 	ttmath::UInt<bits> t;
 	while(b != 0) {
@@ -57,9 +129,12 @@ bool isPrime(ttmath::UInt<bits> n, int k) {
 	
 	//return isPrimeNaive(n);
 
+	/*
 	if (n < 100) {
 		return isPrimeNaive(n);
-	}
+	}*/
+
+	return Miller(n,k);
 
 	ttmath::UInt<bits> x, a, d, r, tmp;
 
@@ -149,7 +224,7 @@ ttmath::UInt<bits> polles(ttmath::UInt<bits> N) {
 		return -1;
 	} else {
 		//std::cout << "found d: " << d << std::endl;
-		if (isPrimeNaive(d) == false) {
+		if (isPrime(d, 5) == false) {
 			//std::cout << d << " is not a factor!" << std::endl;
 			return trial(d);
 		}
@@ -255,7 +330,6 @@ int main() {
 	for(int i = 0; i < factors.size(); i++) {
 		std::cout << factors[i] << std::endl;
 	}
-	
 
 	return 0;
 }
