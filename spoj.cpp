@@ -26,6 +26,9 @@ ttmath::UInt<bits> randUInt() {
 	return n;
 }
 
+/*
+ * Calculates base^exponent * mod N
+ */
 ttmath::UInt<bits> mod_exp(ttmath::UInt<bits> base, ttmath::UInt<bits> exponent, ttmath::UInt<bits> N) {
 	if (N == 1) {
 		return 0;
@@ -42,6 +45,9 @@ ttmath::UInt<bits> mod_exp(ttmath::UInt<bits> base, ttmath::UInt<bits> exponent,
 	return res;
 }
 
+/*
+ * Determine if a number is prime using the Miller-Rabin method
+ */
 bool millerRabin(ttmath::UInt<bits> n, int k) {
 	
 	if (n < 2) {
@@ -52,14 +58,14 @@ bool millerRabin(ttmath::UInt<bits> n, int k) {
         	return false;
 	}
 	
-	ttmath::UInt<bits> s = n - 1;
+	ttmath::UInt<bits> r = n - 1;
     
-	while (s % 2 == 0) {
-        	s /= 2;
+	while (r % 2 == 0) {
+        	r = r/2;
     	}
     
 	for (int i = 0; i < k; i++) {
-		ttmath::UInt<bits> a = randUInt() % (n - 1) + 1, temp = s;
+		ttmath::UInt<bits> a = randUInt() % (n - 1) + 1, temp = r;
         	ttmath::UInt<bits> mod = mod_exp(a, temp, n);
 		
 		while (temp != n - 1 && mod != 1 && mod != n - 1) {
@@ -74,6 +80,9 @@ bool millerRabin(ttmath::UInt<bits> n, int k) {
 	return true;
 }
 
+/*
+ * Return the greatest common divisor of two numbers
+ */
 ttmath::UInt<bits> gcd(ttmath::UInt<bits> a, ttmath::UInt<bits> b) {
 	ttmath::UInt<bits> t;
 	while(b != 0) {
@@ -83,24 +92,6 @@ ttmath::UInt<bits> gcd(ttmath::UInt<bits> a, ttmath::UInt<bits> b) {
 	}
 
 	return a;
-}
-
-bool isPrimeNaive(ttmath::UInt<bits> n) {
-	if(n < 2) return false;
-	if(n == 2) return true;
-   	if(n % 2 == 0) return false;
-    	for(ttmath::UInt<bits> i=3; (i*i)<=n; i+=2){
-        	if(n % i == 0 ) return false;
-   	 }
-    	return true;
-}
-
-bool trivial(ttmath::UInt<bits> factor, ttmath::UInt<bits> N) {
-	if(factor == 1 || factor == -1 ||factor==N||factor==N-N-N) {
-		return true;
-	}else{
-		return false;	
-	}
 }
 
 ttmath::UInt<bits> trial(ttmath::UInt<bits> N) {
@@ -116,19 +107,17 @@ ttmath::UInt<bits> g(ttmath::UInt<bits>	x, ttmath::UInt<bits> N) {
 	return (x * x + 1) % N;
 }
 
-ttmath::UInt<bits> polles(ttmath::UInt<bits> N) {
+ttmath::UInt<bits> pollardsRho(ttmath::UInt<bits> N) {
 	ttmath::UInt<bits> x = randUInt();
 	ttmath::UInt<bits> y = x;
 	ttmath::UInt<bits> d = 1;
 	ttmath::UInt<bits> tmp;
 
 	if (millerRabin(N, 5)) {
-		//std::cout << N << " is a prime " << std::endl;
 		return -1;
 	}
 
 	if (N < 1000) {
-		//std::cout << N << " < 1000" << std::endl;
 		return trial(N);
 	}
 
@@ -139,14 +128,11 @@ ttmath::UInt<bits> polles(ttmath::UInt<bits> N) {
 	}
 	if (d == N) {
 		if (! millerRabin(d, 5)) {
-			//std::cout << d << " == " << N << std::endl;
 			return trial(N);
 		}
 		return -1;
 	} else {
-		//std::cout << "found d: " << d << std::endl;
 		if (millerRabin(d, 5) == false) {
-			//std::cout << d << " is not a factor!" << std::endl;
 			return trial(d);
 		}
 		return d;
@@ -172,22 +158,14 @@ int main() {
 		}	
 		
 		while (factor != -1) {
-			factor = polles(N);
-			//factor = pollardsRho(N);
-			//std::cout << "factor for N = " << N << " -> " << factor << std::endl;
+			factor = pollardsRho(N);
 			if (factor == -1) {
-				//std::cout << "map["<<N<<"] is cur "<< map[N] << std::endl;
 				map[N]++;
-				//std::cout << "map["<<N<<"] is now "<< map[N] << std::endl;
-				//std::cout << N << " should be added to map" << std::endl;
 				break;
 			}
 
-			//std::cout << "map["<<factor<<"] is cur "<< map[factor] << std::endl;
 			map[factor]++;
-			//std::cout << "map["<<factor<<"] is now "<< map[factor] << std::endl;
 			N = N / factor;
-			//std::cout << "new N = " << N << std::endl;
 		}		
 		
 		int test = 1;
