@@ -94,10 +94,17 @@ ttmath::UInt<bits> gcd(ttmath::UInt<bits> a, ttmath::UInt<bits> b) {
 	return a;
 }
 
+/**
+ * The g-function used for the Pollard's rho algorithm
+ */
 ttmath::UInt<bits> g(ttmath::UInt<bits>	x, ttmath::UInt<bits> N) {
 	return (x * x + 1) % N;
 }
 
+/**
+ * An implementation of the Pollard's rho algorithm for finding
+ * prime factors of composite numbers
+ */
 ttmath::UInt<bits> pollardsRho(ttmath::UInt<bits> N) {
 	ttmath::UInt<bits> x = randUInt();
 	ttmath::UInt<bits> y = x;
