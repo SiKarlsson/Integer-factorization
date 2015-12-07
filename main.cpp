@@ -196,8 +196,8 @@ ttmath::UInt<bits> g(ttmath::UInt<bits>	x, ttmath::UInt<bits> N) {
 }
 
 ttmath::UInt<bits> polles(ttmath::UInt<bits> N) {
-	ttmath::UInt<bits> x = 2;
-	ttmath::UInt<bits> y = 2;
+	ttmath::UInt<bits> x = randUInt();
+	ttmath::UInt<bits> y = x;
 	ttmath::UInt<bits> d = 1;
 	ttmath::UInt<bits> tmp;
 
