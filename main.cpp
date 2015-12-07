@@ -7,6 +7,9 @@
 
 const int bits = 4;
 
+/*
+ * Returns a random UInt
+ */
 ttmath::UInt<bits> randUInt() {
 	ttmath::UInt<bits> n;
 	for (unsigned int i = 0; i < bits; i++) {
@@ -32,33 +35,32 @@ ttmath::UInt<bits> mod_exp(ttmath::UInt<bits> base, ttmath::UInt<bits> exponent,
 	return res;
 }
 
-bool millerRabin(ttmath::UInt<bits> p,int iteration) {
+bool millerRabin(ttmath::UInt<bits> n, int k) {
 	
-	if (p < 2) {
+	if (n < 2) {
         	return false;
-    	}
+	}
    
-	if (p != 2 && p % 2==0) {
+	if (n != 2 && n % 2==0) {
         	return false;
 	}
 	
-	ttmath::UInt<bits> s = p - 1;
+	ttmath::UInt<bits> s = n - 1;
     
 	while (s % 2 == 0) {
         	s /= 2;
     	}
     
-	for (int i = 0; i < iteration; i++) {
-		ttmath::UInt<bits> a = randUInt() % (p - 1) + 1, temp = s;
-        	//ttmath::UInt<bits> mod = modulo(a, temp, p);
-        	ttmath::UInt<bits> mod = mod_exp(a, temp, p);
+	for (int i = 0; i < k; i++) {
+		ttmath::UInt<bits> a = randUInt() % (n - 1) + 1, temp = s;
+        	ttmath::UInt<bits> mod = mod_exp(a, temp, n);
 		
-		while (temp != p - 1 && mod != 1 && mod != p - 1) {
-			mod = mod_exp(mod, 2, p);
+		while (temp != n - 1 && mod != 1 && mod != n - 1) {
+			mod = mod_exp(mod, 2, n);
         		temp *= 2;
         	}
         
-		if (mod != p - 1 && temp % 2 == 0) {
+		if (mod != n - 1 && temp % 2 == 0) {
 			return false;
 		}
  	}
