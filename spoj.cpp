@@ -94,11 +94,13 @@ bool Miller(ttmath::UInt<bits> p,int iteration)
     for (int i = 0; i < iteration; i++)
     {
         ttmath::UInt<bits> a = randUInt() % (p - 1) + 1, temp = s;
-        ttmath::UInt<bits> mod = modulo(a, temp, p);
-        while (temp != p - 1 && mod != 1 && mod != p - 1)
+        //ttmath::UInt<bits> mod = modulo(a, temp, p);
+        ttmath::UInt<bits> mod = mod_exp(a, temp, p);
+	while (temp != p - 1 && mod != 1 && mod != p - 1)
         {
-            mod = mulmod(mod, mod, p);
-            temp *= 2;
+            //mod = mulmod(mod, mod, p);
+		mod = mod_exp(mod, 2, p);
+        	temp *= 2;
         }
         if (mod != p - 1 && temp % 2 == 0)
         {
