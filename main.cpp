@@ -7,7 +7,7 @@
 
 const int bits = 4;
 
-/*
+/**
  * Returns a random UInt
  */
 ttmath::UInt<bits> randUInt() {
@@ -19,7 +19,7 @@ ttmath::UInt<bits> randUInt() {
 	return n;
 }
 
-/*
+/**
  * Calculates base^exponent * mod N
  */
 ttmath::UInt<bits> mod_exp(ttmath::UInt<bits> base, ttmath::UInt<bits> exponent, ttmath::UInt<bits> N) {
@@ -38,7 +38,7 @@ ttmath::UInt<bits> mod_exp(ttmath::UInt<bits> base, ttmath::UInt<bits> exponent,
 	return res;
 }
 
-/*
+/**
  * Determine if a number is prime using the Miller-Rabin method
  */
 bool millerRabin(ttmath::UInt<bits> n, int k) {
@@ -73,7 +73,7 @@ bool millerRabin(ttmath::UInt<bits> n, int k) {
 	return true;
 }
 
-/*
+/**
  * Return the greatest common divisor of two numbers
  */
 ttmath::UInt<bits> gcd(ttmath::UInt<bits> a, ttmath::UInt<bits> b) {
@@ -85,15 +85,6 @@ ttmath::UInt<bits> gcd(ttmath::UInt<bits> a, ttmath::UInt<bits> b) {
 	}
 
 	return a;
-}
-
-ttmath::UInt<bits> trial(ttmath::UInt<bits> N) {
-	for(ttmath::UInt<bits> i = 2; i <= (N/2); i++) {
-		if (N % i == 0) {
-			return i;
-		}
-	}
-	return -1;
 }
 
 ttmath::UInt<bits> g(ttmath::UInt<bits>	x, ttmath::UInt<bits> N) {
@@ -110,24 +101,14 @@ ttmath::UInt<bits> pollardsRho(ttmath::UInt<bits> N) {
 		return -1;
 	}
 
-	if (N < 1000) {
-		return trial(N);
-	}
-
 	while(d == 1) {
 		x = g(x, N);
 		y = g(g(y, N), N);
 		d = gcd(std::max(x, y) - std::min(x, y), N);
 	}
 	if (d == N) {
-		if (! millerRabin(d, 5)) {
-			return trial(N);
-		}
 		return -1;
 	} else {
-		if (millerRabin(d, 5) == false) {
-			return trial(d);
-		}
 		return d;
 	}
 }
